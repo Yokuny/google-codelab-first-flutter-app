@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(
-              seedColor: const Color.fromARGB(172, 198, 0, 233)),
+              seedColor: Color.fromARGB(255, 55, 255, 200)),
         ),
         home: const MyHomePage(),
       ),
@@ -39,20 +39,44 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var appState = context.watch<MyAppState>();
 
     return Scaffold(
-      body: Column(
-        children: [
-          const Text('A random name:'),
-          Text(appState.current.asSnakeCase),
-          ElevatedButton(
-            onPressed: () {
-              appState.getNext();
-            },
-            child: const Text('Next'),
-          ),
-        ],
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text('A random name:', style: TextStyle(fontSize: 24)),
+            BigCardText(),
+            SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: context.watch<MyAppState>().getNext,
+              child: const Text('Next'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class BigCardText extends StatelessWidget {
+  const BigCardText({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    var theme = Theme.of(context);
+    var style = theme.textTheme.displayMedium!.copyWith(
+      fontSize: 64,
+      color: theme.colorScheme.onPrimary,
+    );
+    return Card(
+      color: theme.colorScheme.primary,
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child:
+            Text(context.watch<MyAppState>().current.asSnakeCase, style: style),
       ),
     );
   }
