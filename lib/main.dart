@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(
               seedColor: const Color.fromARGB(255, 55, 255, 200)),
         ),
-        home: const MyHomePage(),
+        home: MyHomePage(),
       ),
     );
   }
@@ -28,27 +28,23 @@ class MyApp extends StatelessWidget {
 
 class MyAppState extends ChangeNotifier {
   var current = WordPair.random();
-  var favorites = <WordPair>[];
-
   void getNext() {
     current = WordPair.random();
     notifyListeners();
   }
 
+  var favorites = <WordPair>[];
   void toggleFavorite() {
     if (favorites.contains(current)) {
       favorites.remove(current);
     } else {
       favorites.add(current);
     }
-    print(favorites);
     notifyListeners();
   }
 }
 
 class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key});
-
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
@@ -64,9 +60,9 @@ class MyHomePage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text('A random name:', style: TextStyle(fontSize: 24)),
-            const BigCardText(),
-            const SizedBox(height: 10),
+            Text("A Random Word"),
+            BigCard(pair: pair),
+            SizedBox(height: 10),
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -93,24 +89,25 @@ class MyHomePage extends StatelessWidget {
   }
 }
 
-class BigCardText extends StatelessWidget {
-  const BigCardText({
-    super.key,
-  });
-
+class BigCard extends StatelessWidget {
+  const BigCard({
+    Key? key,
+    required this.pair,
+  }) : super(key: key);
+  final WordPair pair;
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
+    // ↓ Add this.
     var style = theme.textTheme.displayMedium!.copyWith(
-      fontSize: 64,
       color: theme.colorScheme.onPrimary,
     );
+
     return Card(
       color: theme.colorScheme.primary,
       child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child:
-            Text(context.watch<MyAppState>().current.asSnakeCase, style: style),
+        padding: const EdgeInsets.all(20),
+        child: Text(pair.asSnakeCase, style: style),
       ),
     );
   }
